@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Text;
 
 namespace RefactoringKata
 {
@@ -27,27 +31,26 @@ namespace RefactoringKata
                 for (var j = 0; j < order.GetProductsCount(); j++)
                 {
                     var product = order.GetProduct(j);
-                    sb.Append("{");
-                    sb.Append("\"code\": \"");
-                    sb.Append(product.Code);
-                    sb.Append("\", ");
-                    sb.Append("\"color\": \"");
-                    sb.Append(product.getColorFor());
-                    sb.Append("\", ");
+                    var productDetail = new Dictionary<string,object>()
+                    {
+                        {"code",product.Code},
+                        {"color",product.getColorFor()},
+                    };
 
                     if (product.Size != Product.SIZE_NOT_APPLICABLE)
                     {
-                        sb.Append("\"size\": \"");
-                        sb.Append(product.getSizeFor());
-                        sb.Append("\", ");
+                        productDetail.Add("size",product.getSizeFor());
                     }
 
-                    sb.Append("\"price\": ");
-                    sb.Append(product.Price);
-                    sb.Append(", ");
-                    sb.Append("\"currency\": \"");
-                    sb.Append(product.Currency);
-                    sb.Append("\"}, ");
+                    productDetail.Add("price",product.Price);
+                    productDetail.Add("currency",product.Currency);
+
+                    sb.Append("{"+string.Join(", ",productDetail.Select(prop =>
+                    {
+                        if (prop.Value is string)
+                            return string.Format("\"{0}\": \"{1}\"", prop.Key, prop.Value);
+                        return string.Format("\"{0}\": {1}", prop.Key, prop.Value);
+                    }).ToArray()) + "}, ");
                 }
 
                 if (order.GetProductsCount() > 0)
@@ -55,8 +58,7 @@ namespace RefactoringKata
                     sb.Remove(sb.Length - 2, 2);
                 }
 
-                sb.Append("]");
-                sb.Append("}, ");
+                sb.Append("]}, ");
             }
 
             if (_orders.GetOrdersCount() > 0)
