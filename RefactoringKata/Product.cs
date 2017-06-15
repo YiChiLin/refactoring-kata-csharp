@@ -1,4 +1,8 @@
-﻿namespace RefactoringKata
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace RefactoringKata
 {
     public class Product
     {
@@ -53,6 +57,25 @@
                 default:
                     return "no color";
             }
+        }
+
+        public string SerializeProduct()
+        {
+            var productDetail = new Dictionary<string, object>()
+            {
+                {"code", Code},
+                {"color", getColorFor()},
+            };
+
+            if (Size != SIZE_NOT_APPLICABLE)
+            {
+                productDetail.Add("size", getSizeFor());
+            }
+
+            productDetail.Add("price", Price);
+            productDetail.Add("currency", Currency);
+
+            return JsonHelper.SerializeObj(productDetail);
         }
     }
 }

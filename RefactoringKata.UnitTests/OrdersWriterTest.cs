@@ -33,7 +33,7 @@ namespace RefactoringKata.UnitTests
         [Test]
         public void OneOrderWithOneProduct()
         {
-            _order111.AddProduct(new Product("Shirt", 1, 3, 2.99, "TWD"));
+            _order111.Products.Add(new Product("Shirt", 1, 3, 2.99, "TWD"));
 
             var order111Json = JsonOrder111WithProduct("{\"code\": \"Shirt\", \"color\": \"blue\", \"size\": \"M\", \"price\": 2.99, \"currency\": \"TWD\"}");
             Assert.AreEqual("{\"orders\": [" + order111Json + "]}", new OrdersWriter(_orders).GetContents());
@@ -42,7 +42,7 @@ namespace RefactoringKata.UnitTests
         [Test]
         public void OneOrderWithOneProductNoSize()
         {
-            _order111.AddProduct(new Product("Pot", 2, -1, 16.50, "SGD"));
+            _order111.Products.Add(new Product("Pot", 2, -1, 16.50, "SGD"));
 
             var order111Json = JsonOrder111WithProduct("{\"code\": \"Pot\", \"color\": \"red\", \"price\": 16.5, \"currency\": \"SGD\"}");
             Assert.AreEqual("{\"orders\": [" + order111Json + "]}", new OrdersWriter(_orders).GetContents());

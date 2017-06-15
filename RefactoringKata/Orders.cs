@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace RefactoringKata
 {
@@ -19,6 +21,14 @@ namespace RefactoringKata
         public Order GetOrder(int i)
         {
             return _orders[i];
+        }
+
+        public List<Order> GetOrders{ get { return _orders; } }
+
+        public string GetOrdersJson()
+        {
+            var result = string.Join(", ", _orders.Select(order => order.GetOrderJson()).ToArray());
+            return "{\"orders\": [" +result + "]}";
         }
     }
 }

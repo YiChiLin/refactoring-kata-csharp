@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace RefactoringKata
 {
@@ -12,24 +13,27 @@ namespace RefactoringKata
             this.id = id;
         }
 
-        public int GetOrderId()
+        public int OrderId
         {
-            return id;
+            get { return id; }
         }
 
-        public int GetProductsCount()
+        public List<Product> Products { get { return _products; } }
+
+        public string GetProductJson()
         {
-            return _products.Count;
+            return "["+ string.Join(",",Products.Select(prodcut => prodcut.SerializeProduct()).ToArray())+"]";
         }
 
-        public Product GetProduct(int j)
+        public string GetOrderJson()
         {
-            return _products[j];
-        }
+            var orderDetail = new Dictionary<string, object>()
+            {
+                {"id", OrderId},
+                {"products", GetProductJson()}
+            };
 
-        public void AddProduct(Product product)
-        {
-            _products.Add(product);
+            return JsonHelper.SerializeArray(orderDetail);
         }
     }
 }
